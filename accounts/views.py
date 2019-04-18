@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import json
+from accounts import mysql
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseForbidden
@@ -14,7 +15,7 @@ def index(request):
         password = request.POST.get('password','')
         print(account,password)
         
-        if account == 'changvvb' and password == 'changvvb':
+        if verify(account,password):
             return HttpResponse("You login successfully!")
         else: 
             return HttpResponseForbidden()
@@ -29,7 +30,10 @@ def index(request):
 
 
 def verify(account,password):
-    if account == '123' and password == 'changvvb':
+
+    if mysql.select(account,password):
+        # print("row:"+str(mysql.select(account,password)))
         return True
     else:
+        # print("row:"+str(mysql.select(account,password)))
         return False
