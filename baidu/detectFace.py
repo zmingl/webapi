@@ -8,7 +8,7 @@ import os
 import time
 import json
 from io import BytesIO
-
+import intobase
 
 """图像分割"""
 def crop(path, input, height, width, page):
@@ -41,35 +41,32 @@ def crop(path, input, height, width, page):
     return images
 images = crop('/Users/mei/python/webapi/Faced-check-in','/Users/mei/python/webapi/Faced-check-in/src/people-to-people.jpg',200,200,'ww')
 
-""" 读取图片 """
-def get_file_content(filename):
-    with open(filename, "rb") as fp:
-        date = str(base64.b64encode(fp.read()))
-        return date
-
 client = AipFace(constant.APP_ID, constant.API_KEY, constant.SECRET_KEY)
 
-# image = get_file_content('/Users/mei/Faced-check-in/harry-meghan-15.jpg')
+image = intobase.get_file_content('/Users/mei/python/webapi/Faced-check-in/pic/cvv.jpg')
 
 imageType = "BASE64"
 
 """ 调用人脸检测 """
-# ret = client.detect(image, imageType)
+
 """ 如果有可选参数 """
 options = {}
-options["face_field"] = "age"
+options["face_field"] = "age,beauty"
 options["max_face_num"] = 10
 options["face_type"] = "LIVE"
 
 """ 带参数调用人脸检测 """
-
+ret = client.detect(image, imageType,options)
+print (ret)
 faces = []
-for image in images:
-    ret = client.detect(image, imageType, options)
-    if (ret['result'] != None):
-        face_list = ret['result']['face_list']
-        for f in face_list :
-            faces.append(f)
-            print (f['face_token'])
-    time.sleep(0.5)
-print(len(faces))
+
+# for image in images:
+#     ret = client.detect(image, imageType, options)
+#     if (ret['result'] != None):
+#         face_list = ret['result']['face_list']
+#         for f in face_list :
+#             faces.append(f)
+#             # print (f['face_token'])
+#             print(f)
+#     time.sleep(0.5)
+# print(len(faces))

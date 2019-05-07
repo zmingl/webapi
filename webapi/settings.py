@@ -25,12 +25,13 @@ SECRET_KEY = ')sh5oax-28&_@uf$azu^hxe44v-($rr7w=q))dl%-h7l@^$6(&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.5','127.0.0.1','192.168.43.149','172.18.37.159']
+ALLOWED_HOSTS = ['192.168.43.149','192.168.1.2','127.0.0.1','192.168.43.149','172.18.37.159']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 'meetings',
     'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
