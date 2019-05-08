@@ -61,7 +61,7 @@ def create_meeting_list(request):
                 for m in meetings:
                     total = mysql.meeting_total(m['id'])
                     hc = mysql.meeting_hc(m['id'])
-                    ret.append({'start_at':m['start_at'],'end_at':m['end_at'],'name':m['name'],'id':m['id'],'founder_name':m['founder_user'], 'total':total, 'hc':hc})
+                    ret.append({'start_at':m['start_at'],'end_at':m['end_at'],'name':m['name'],'id':m['id'],'founder_name':m['founder__user'], 'total':total, 'hc':hc})
                 json_data = json.dumps(list(ret),cls=DjangoJSONEncoder)
                 #cls use to seriallizable type datetime
                 #json_data = json.dumps(list(map(model_to_dict,meetings)),cls=DjangoJSONEncoder)
