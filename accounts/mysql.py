@@ -25,7 +25,6 @@ def meeting_total(meeting_id):
         with connection.cursor() as cursor:
                 result = cursor.execute('select id from users_meetings where meeting_id=%s',[meeting_id])
                 return result
-
 def meeting_hc(meeting_id):
         with connection.cursor() as cursor:
                 result = cursor.execute('select id from users_meetings where meeting_id=%s and status=%s',[meeting_id,'已签到'])
@@ -51,7 +50,6 @@ def insert_meeting(founder_id,name,start,end):
 
 # 添加参会人员    
 def insert_users_meeting(meeting_id,user_id):
-#     rows = [ (meeting_id,user_id,'未签到') for user_id in user_ids]
     row = (meeting_id,user_id,'未签到')
     with connection.cursor() as cursor:
         result = cursor.execute("INSERT into users_meetings(meeting_id,user_id,status) values(%s,%s,%s)",row)

@@ -15,4 +15,5 @@ urlpatterns = [
     path('att_meeting_list', views.att_meeting_list, name='att_meeting_list'),
     path('delete_users_meeting', views.delete_users_meeting, name='delete_users_meeting'),
     path('delete_meeting', views.delete_meeting, name='delete_meeting'),
+    path('update_user_status', views.update_user_status, name='update_user_status'),
 ]

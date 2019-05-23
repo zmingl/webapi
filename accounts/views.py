@@ -14,10 +14,11 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 
+ok_result = {'status':'OK'}
+failed_result = {'status':'FAILED'}
+
 #管理员登录
 def admin_login(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'GET':
         mobile = request.GET.get('mobile')
         password = request.GET.get('password')
@@ -31,8 +32,6 @@ def admin_login(request):
 
 #参会者登录
 def att_login(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     print(request.build_absolute_uri())
     if request.method == 'POST':
         json_data = json.loads(request.body)
@@ -50,24 +49,20 @@ def att_login(request):
 
 #创建会议查找
 def create_meeting_list(request):
-    failed_result = {'status':'FAILED'}
     if request.method == 'GET':
         user = request.session.get('user_info')
         if user:
             founderId = user['id']
             meetings = mysql.select_meeting(founderId)
-            if meetings:
-                ret = []
-                for m in meetings:
-                    total = mysql.meeting_total(m['id'])
-                    hc = mysql.meeting_hc(m['id'])
-                    ret.append({'start_at':m['start_at'],'end_at':m['end_at'],'name':m['name'],'id':m['id'],'founder_name':m['founder__user'], 'total':total, 'hc':hc})
-                json_data = json.dumps(list(ret),cls=DjangoJSONEncoder)
-                #cls use to seriallizable type datetime
-                #json_data = json.dumps(list(map(model_to_dict,meetings)),cls=DjangoJSONEncoder)
-                return HttpResponse(json_data,content_type="application/json")
-            else:
-                return HttpResponse(json.dumps(failed_result),content_type="application/json")
+            ret = []
+            for m in meetings:
+                total = mysql.meeting_total(m['id'])
+                hc = mysql.meeting_hc(m['id'])
+                ret.append({'start_at':m['start_at'],'end_at':m['end_at'],'name':m['name'],'id':m['id'],'founder_name':m['founder__user'], 'total':total, 'hc':hc})
+            json_data = json.dumps(list(ret),cls=DjangoJSONEncoder)
+            #cls use to seriallizable type datetime
+            #json_data = json.dumps(list(map(model_to_dict,meetings)),cls=DjangoJSONEncoder)
+            return HttpResponse(json_data,content_type="application/json")
 
             return HttpResponseForbidden(json.dumps(failed_result),content_type="application/json")
  
@@ -75,29 +70,23 @@ def create_meeting_list(request):
 
 #参会会议查找
 def att_meeting_list(request):
-    failed_result = {'status':'FAILED'}
     if request.method == 'GET':
         user = request.session.get('user_info')
         userId = user['id']
         meetings = mysql.select_meeting_att(userId)
-        if meetings:
-            ret = []
-            for m in meetings:
-                total = mysql.meeting_total(m['meeting__id'])
-                hc = mysql.meeting_hc(m['meeting__id'])
-                ret.append({'status':m['status'],'start_at':m['meeting__start_at'],'end_at':m['meeting__end_at'],'name':m['meeting__name'],'id':m['meeting__id'],'founder_name':m['meeting__founder__user'],'total':total,'hc':hc})
-            json_data = json.dumps(list(ret),cls=DjangoJSONEncoder)
-            return HttpResponse(json_data,content_type="application/json")
-        else: 
-            return HttpResponse(json.dumps([]),content_type="application/json")
-        
+        ret = []
+        for m in meetings:
+            total = mysql.meeting_total(m['meeting__id'])
+            hc = mysql.meeting_hc(m['meeting__id'])
+            ret.append({'status':m['status'],'start_at':m['meeting__start_at'],'end_at':m['meeting__end_at'],'name':m['meeting__name'],'id':m['meeting__id'],'founder_name':m['meeting__founder__user'],'total':total,'hc':hc})
+        json_data = json.dumps(list(ret),cls=DjangoJSONEncoder)
+        return HttpResponse(json_data,content_type="application/json")
+    
         return HttpResponseForbidden(json.dumps(failed_result),content_type="application/json")
 
 
 #用户注册
 def register(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         json_data = json.loads(request.body)
         username = json_data['username']
@@ -117,8 +106,6 @@ def register(request):
 
 #会议创建
 def create(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         founderId = user['id']
@@ -126,15 +113,15 @@ def create(request):
         name = json_data['name']
         start = json_data['start']
         end = json_data['end']
-        if mysql.insert_meeting(founderId,name,start,end):
-            return HttpResponse(json.dumps(ok_result),content_type="application/json")
+        meeting_id = mysql.insert_meeting(founderId,name,start,end)
+        if meeting_id:
+            ok_insert = {'meeting_id':meeting_id}
+            return HttpResponse(json.dumps(ok_insert),content_type="application/json")
         else: 
             return HttpResponseForbidden(json.dumps(failed_result),content_type="application/json")
 
 #添加会议成员
 def addusers(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         json_data = json.loads(request.body)
@@ -149,8 +136,6 @@ def addusers(request):
 
 #删除用户所在会议
 def delete_users_meeting(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         userId = user['id']
@@ -163,8 +148,6 @@ def delete_users_meeting(request):
 
 #删除会议
 def delete_meeting(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         userId = user['id']
@@ -177,8 +160,6 @@ def delete_meeting(request):
 
 # 修改会议信息        
 def update_meeting(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         userId = user['id']
@@ -193,8 +174,6 @@ def update_meeting(request):
 
 # 修改人员信息        
 def update_user(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         userId = user['id']
@@ -210,8 +189,6 @@ def update_user(request):
 
 #修改参会状态
 def update_user_meeting(request):
-    ok_result = {'status':'OK'}
-    failed_result = {'status':'FAILED'}
     if request.method == 'POST':
         user = request.session.get('user_info')
         userId = user['id']
@@ -226,17 +203,22 @@ def update_user_meeting(request):
 
 
 
-##验证用户名密码
-# def verify(request):
-#     session_key = request.COOKIES.get('session_key')
-#     session = Session.objects.get(session_key=session_key)
-#     return session
+#摄像头拍摄修改用户参会状态
+def update_user_status(request):
+    if request.method == 'POST':
+        json_data = json.loads(request.body)
+        meeting_id = json_data['meeting_id']
+        status = json_data['status']
+        user_id = json_data['user_id']
+        if mysql.update_user_meeting(status,meeting_id,user_id):
+            return HttpResponse(json.dumps(ok_result),content_type="application/json")
+        else: 
+            return HttpResponseForbidden(json.dumps(failed_result),content_type="application/json")
+
 
     
 
 
 
 
-# 摄像头识别后更改签到状态（两个camera，1=参加，2=离开）
-# 创建会议
 

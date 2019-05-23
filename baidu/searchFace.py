@@ -1,12 +1,20 @@
 from aip import AipFace
-from . import constant
 import base64
 import json
-from . import intobase
 
-client = AipFace(constant.APP_ID, constant.API_KEY, constant.SECRET_KEY)
+# -*- coding: utf-8 -*-
 
-# image = intobase.get_file_content('/Users/mei/python/webapi/Faced-check-in/pic/cvv1556911362.784927.jpg')
+""" 你的 APPID AK SK ! """
+constant = {
+        'APP_ID' :'15357248',
+        'API_KEY' : 'yxo2FSEQkMny6j7PYO4ZEpLO',
+        'SECRET_KEY' : 'H9sWswmLhc0bpM8tbStKP7todCIepN0P'
+}
+
+
+
+
+client = AipFace(constant['APP_ID'], constant['API_KEY'], constant['SECRET_KEY'])
 
 imageType = "BASE64"
 
@@ -18,13 +26,12 @@ groupIdList = "1"
 """ 如果有可选参数 """
 options = {}
 options["quality_control"] = "NORMAL"
-# options["liveness_control"] = "LOW"
-# options["user_id"] = "233451"
 options["max_user_num"] = 1
 
 """ 带参数调用人脸搜索 """
 def search(pic64):
     ret = client.search(pic64,imageType, groupIdList, options)
+    print(ret)
     # json_data = json.loads(ret)
     error_msg = ret['error_msg']
     if error_msg == 'SUCCESS':
