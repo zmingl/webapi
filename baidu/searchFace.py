@@ -26,6 +26,7 @@ groupIdList = "1"
 """ 如果有可选参数 """
 options = {}
 options["quality_control"] = "NORMAL"
+options["liveness_control"] = "NORMAL"
 options["max_user_num"] = 1
 
 """ 带参数调用人脸搜索 """
