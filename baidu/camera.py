@@ -14,14 +14,15 @@ camera1 = cv2.VideoCapture(camera_port1)
 # camera2 = cv2.VideoCapture(camera_port2)
 time.sleep(0.1)  #等待摄像头初始化完成，避免拍出的照片亮度暗
 
-meeting_id = 5
+meeting_id = 3
 
 while True:
     return_value, image = camera1.read()
     return_value, buffer = cv2.imencode('.jpg', image)
     img_b64= base64.b64encode(buffer).decode("utf-8")
-    user_id = searchFace.search(img_b64)
-    user_info = {'user_id': user_id , 'meeting_id': meeting_id , 'status' : '已签到'}
-    user_info = json.dumps(user_info)
-    r = requests.post("http://127.0.0.1:8000/accounts/update_user_status",data = user_info)
+    user_ids = searchFace.search(img_b64)
+    for user_id in user_ids:
+        user_info = {'user_id': user_id , 'meeting_id': meeting_id , 'status' : '已签到'}
+        user_info = json.dumps(user_info)
+        r = requests.post("http://127.0.0.1:8000/accounts/update_user_status",data = user_info)
     time.sleep(1)
