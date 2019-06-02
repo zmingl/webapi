@@ -88,6 +88,22 @@ def att_meeting_list(request):
     
         return HttpResponseForbidden(json.dumps(failed_result),content_type="application/json")
 
+#人员列表
+def person_list(request):
+    if request.method == 'POST':
+        user = request.session.get('user_info')
+        userId = user['id']
+        json_data = json.loads(request.body)
+        meetingId = json_data['meeting_id']
+        lists = mysql.select_users_in_meeting(meetingId)
+        ret = []
+        for l in lists:
+            ret.append({'status':l['status'],'name':l['user__user']})
+        json_data = json.dumps(list(ret),cls=DjangoJSONEncoder)
+        return HttpResponse(json_data,content_type="application/json")
+    
+        return HttpResponseForbidden(json.dumps(failed_result),content_type="application/json")
+
 
 #用户注册
 def register(request):

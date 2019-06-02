@@ -30,6 +30,10 @@ def meeting_hc(meeting_id):
                 result = cursor.execute('select id from users_meetings where meeting_id=%s and status=%s',[meeting_id,'已签到'])
                 return result
 
+#查找人员列表
+def select_users_in_meeting(meeting_id):
+        return Users_Meetings.objects.filter(meeting_id=meeting_id).values('status','user__user')
+
 # 用户注册
 def insert_user(username,password,mobile,upload):
     with connection.cursor() as cursor:
