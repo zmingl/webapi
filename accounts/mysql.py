@@ -38,13 +38,13 @@ def insert_user(username,password,mobile,upload):
         print (result)
         with transaction.atomic():
                 upload(result)
-        # connection.commit()
     return result   
 
 # 会议创建    
 def insert_meeting(founder_id,name,start,end):
     with connection.cursor() as cursor:
-        result = cursor.execute("INSERT into meetings(founder_id,name,start_at,end_at) values(%s,%s,%s,%s)",[founder_id,name,start,end])
+        cursor.execute("INSERT into meetings(founder_id,name,start_at,end_at) values(%s,%s,%s,%s)",[founder_id,name,start,end])
+        result = cursor.lastrowid
         connection.commit()
     return result   
 

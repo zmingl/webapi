@@ -39,11 +39,11 @@ def crop(path, input, height, width, page):
             # im.crop(box).save(os.path.join(path,"PNG","%s" % page,"IMG-%s.png" % k))
             k +=1
     return images
-images = crop('/Users/mei/python/webapi/Faced-check-in','/Users/mei/python/webapi/Faced-check-in/src/people-to-people.jpg',200,200,'ww')
+images = crop('/Users/mei/python/webapi','/Users/mei/python/webapi/1.jpg',200,200,'ww')
 
 client = AipFace(constant.APP_ID, constant.API_KEY, constant.SECRET_KEY)
 
-image = intobase.get_file_content('/Users/mei/python/webapi/Faced-check-in/pic/cvv.jpg')
+image = intobase.get_file_content('/Users/mei/python/webapi/1.jpg')
 
 imageType = "BASE64"
 

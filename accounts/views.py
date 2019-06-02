@@ -36,6 +36,10 @@ def att_login(request):
     if request.method == 'POST':
         json_data = json.loads(request.body)
         loginPhoto = json_data['loginPhoto']
+        # strs = loginPhoto
+        # imgdata=base64.b64decode(strs)
+        # file=open('1.jpg','wb')
+        # file.write(imgdata)
         if json_data:
             user_id = searchFace.search(loginPhoto)
             if user_id:
